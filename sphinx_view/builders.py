@@ -57,19 +57,18 @@ class SphinxViewBuilder(JSONHTMLBuilder):
 
 
 def purge_django_views(app, env, docname):
-    if not hasattr(env, 'django_doc_views'):
-        return
-    env.django_doc_views.pop(docname, None)
+    if hasattr(env, 'django_doc_views'):
+        env.django_doc_views.pop(docname, None)
 
 
 def process_django_views(app, env, *args):
-    if not (hasattr(env, 'django_all_views') and hasattr(env, 'django_urlpatterns')):
+    if not (hasattr(env, "django_all_views") and hasattr(env, "django_urlpatterns")):
         return
     context = {
-        'django_all_views': env.django_all_views,
-        'django_urlpatterns': env.django_urlpatterns,
+        "django_all_views": env.django_all_views,
+        "django_urlpatterns": env.django_urlpatterns,
     }
     templates_path = [Path(app.confdir) / t for t in app.config.templates_path]
-    python = SphinxRenderer(templates_path).render('urls.py.jinja2', context)
-    with open(Path(app.outdir) / 'urls.py', 'w') as fh:
+    python = SphinxRenderer(templates_path).render("urls.py.jinja2", context)
+    with open(Path(app.outdir) / "urls.py", "w") as fh:
         fh.write(python)
