@@ -51,10 +51,11 @@ class DocumentationView(TemplateView):
             return context
 
         render_ctx = {}
-        for django_view in context["doc"]["django_doc_views"]:
+        current_page_name = context["doc"]["current_page_name"]
+        for django_view in context["doc"]["django_views"]:
             request = WSGIRequest({
                 "REQUEST_METHOD": "GET",
-                "PATH_INFO": reverse(f"sphinx-view:{django_view}"),
+                "PATH_INFO": reverse(f"sphinx-view:{current_page_name}.{django_view}"),
                 "wsgi.input": StringIO()
             })
             request.COOKIES = self.request.COOKIES.copy()
