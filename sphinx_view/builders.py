@@ -73,6 +73,7 @@ def process_django_views(app, env, *args):
         "urlpatterns": env.django_urlpatterns,
     }
     templates_path = [Path(app.confdir) / t for t in app.config.templates_path]
+    templates_path.append(Path(__file__).parent / 'templates/sphinx_view')
     python = SphinxRenderer(templates_path).render("urls.py.jinja2", context)
     with open(Path(app.outdir) / "urls.py", "w") as fh:
         fh.write(python)
