@@ -7,7 +7,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.http import Http404
 from django.middleware.csrf import rotate_token
 from django.template import Context, Template
-from django.urls import reverse, resolve
+from django.urls import reverse, resolve, NoReverseMatch
 from django.utils.safestring import mark_safe
 from django.utils.html import strip_spaces_between_tags
 from django.views.generic.base import TemplateView
@@ -53,9 +53,13 @@ class DocumentationView(TemplateView):
         render_ctx = {}
         current_page_name = context["doc"]["current_page_name"]
         for django_view in context["doc"]["django_views"]:
+            try:
+                path_info = reverse(f"sphinx-view:{current_page_name}.{django_view}")
+            except NoReverseMatch:
+                continue
             request = WSGIRequest({
                 "REQUEST_METHOD": "GET",
-                "PATH_INFO": reverse(f"sphinx-view:{current_page_name}.{django_view}"),
+                "PATH_INFO": path_info,
                 "wsgi.input": StringIO()
             })
             request.COOKIES = self.request.COOKIES.copy()

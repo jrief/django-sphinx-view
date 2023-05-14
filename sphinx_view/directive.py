@@ -20,8 +20,6 @@ class DjangoViewDirective(CodeBlock):
     })
 
     def __init__(self, name, arguments, options, content, *args):
-        if not options.get("view-function"):
-            raise DocumentError("Directive '.. django-view::' requires mandatory option :view-function:")
         if "hide-code" in options and "swap-code" in options:
             raise DocumentError("Directive '.. django-view::' can not specify both :hide-code: and :swap-code:")
         try:
@@ -42,7 +40,8 @@ class DjangoViewDirective(CodeBlock):
         self.env.django_urlpatterns.setdefault(self.env.docname, {})
 
         self.env.django_code_snippets[self.env.docname][self.django_view_name] = "\n".join(self.content)
-        self.env.django_urlpatterns[self.env.docname][self.django_view_name] = self.options["view-function"]
+        if "view-function" in self.options:
+            self.env.django_urlpatterns[self.env.docname][self.django_view_name] = self.options["view-function"]
         attributes = {"format": "html"}
         raw_node = nodes.raw(
             "",
