@@ -66,6 +66,10 @@ class DocumentationView(TemplateView):
             if "CSRF_COOKIE" not in self.request.META:
                 rotate_token(self.request)
             request.META["CSRF_COOKIE"] = self.request.META["CSRF_COOKIE"]
+            if hasattr(self.request, "session"):
+                if not self.request.session.session_key:
+                    self.request.session.cycle_key()
+                request.session = self.request.session
             resolver = resolve(request.path)
             response = resolver.func(request)
             response.render()
