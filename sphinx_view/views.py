@@ -51,7 +51,7 @@ class DocumentationView(TemplateView):
             return context
 
         render_ctx = {}
-        current_page_name = context["doc"]["current_page_name"]
+        current_page_name = context["doc"]["current_page_name"].lower().replace('-', '_')
         for django_view in context["doc"]["django_views"]:
             try:
                 path_info = reverse(f"sphinx-view:{current_page_name}.{django_view}")
